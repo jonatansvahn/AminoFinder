@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="aminoacid.AppTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-03-27T11:55:47" hostname="LAPTOP-6KVE97RI" time="0.022">
+  <properties/>
+  <testcase name="appHasAGreeting()" classname="aminoacid.AppTest" time="0.022"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
