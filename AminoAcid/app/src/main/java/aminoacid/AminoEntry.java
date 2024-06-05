@@ -10,6 +10,7 @@ public class AminoEntry {
   private double hpclIndex;
   private String sequence;  
   private int length;
+  private int hydrophobicCount;
 
   public AminoEntry(int excelRow, double mH, int start, int end, String domain, double hpclIndex, String sequence) {
     this.excelRow = excelRow;
@@ -49,6 +50,15 @@ public class AminoEntry {
   public double getHPCL() {
     return hpclIndex;
   }
+
+  public void setHydrophobicCount(int count) {
+    hydrophobicCount = count;
+  }
+
+  public int getHydrophobicCount() {
+    return hydrophobicCount;
+  }
+
   public String[] getArray() {
     String[] result = {Integer.toString(excelRow), Double.toString(mH), Integer.toString(start), Integer.toString(end), domain, Double.toString(hpclIndex), sequence};
     return result;

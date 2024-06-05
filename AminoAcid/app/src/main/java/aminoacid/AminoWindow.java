@@ -6,6 +6,8 @@ import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.awt.BorderLayout;
 import javax.swing.table.DefaultTableModel;
@@ -40,12 +42,15 @@ public class AminoWindow {
   private JTextField maxLengthField;
   private JTable aminoTable;
   private DefaultTableModel tableModel;
+  private JTextField hydroField;
 
   private JTextField errorLabel;
   
   private static final Dimension WINDOW_SIZE = new Dimension(1200, 600);
 
   private String[] tableColNames = {"ExcelRow", "M+H", "Start", "End", "Domain", "HPLC Index", "Sequence"};
+
+  private boolean sortByHydrophobic;
 
   public AminoWindow(AminoModel aminoModel) {
     this.aminoModel = aminoModel;
@@ -56,9 +61,9 @@ public class AminoWindow {
     JPanel top = new JPanel(new FlowLayout(FlowLayout.CENTER, 50, 30));
     top.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
 
-    JButton imporButton = new JButton("Import");
+    JButton importButton = new JButton("Import");
 
-    imporButton.addActionListener(action -> {
+    importButton.addActionListener(action -> {
       JFileChooser fileChooser = new JFileChooser();
 
       int result = fileChooser.showOpenDialog(frame);
@@ -86,10 +91,10 @@ public class AminoWindow {
 
     });
     
-    top.add(imporButton);
+    top.add(importButton);
 
     commandField = new JTextField();
-    commandField.setPreferredSize(new Dimension(600, 30));
+    commandField.setPreferredSize(new Dimension(400, 30));
     top.add(commandField);
 
     JButton filterButton = new JButton("Filter");
@@ -116,8 +121,30 @@ public class AminoWindow {
     lengthPanel.add(maxLengthLabel);
     lengthPanel.add(maxLengthField);
     //top.add(maxLengthField);  
-    
     top.add(lengthPanel);
+
+
+    JPanel hydroPanel = new JPanel(new GridLayout(2, 1, 20, 10));
+    JToggleButton hydroButton = new JToggleButton("Hydrophobic");
+    ItemListener itemListener = new ItemListener() {
+
+      // itemStateChanged() method is invoked automatically
+      // whenever you click or unclick on the Button.
+      public void itemStateChanged(ItemEvent itemEvent) {
+        int state = itemEvent.getStateChange();
+
+        sortByHydrophobic = state == ItemEvent.SELECTED; 
+      }
+    };
+    hydroButton.addItemListener(itemListener);
+    hydroField = new JTextField();
+    hydroField.setPreferredSize(new Dimension(30, 30));
+    hydroPanel.add(hydroButton);
+    hydroPanel.add(hydroField);
+    top.add(hydroPanel);
+
+
+    
 
     JPanel center = new JPanel();
     center.setLayout(new BoxLayout(center, BoxLayout.Y_AXIS));
@@ -180,10 +207,19 @@ public class AminoWindow {
       } catch (Exception e) {
         throw new Exception("Symbol in length textfields needs to be a number");
       }
-        List<AbstractCondition> conditionList = commandParser.parseCommand(commandField.getText());
-        List<AminoEntry> filteredList = aminoModel.filterAminos(minLength, maxLength, conditionList);
-        renderTable(filteredList);
-        errorLabel.setText("Error Field                 ");
+      int hydroCount = 0;
+      try {
+        if (sortByHydrophobic) {
+          hydroCount = Integer.parseInt(hydroField.getText());
+        }
+      } catch (Exception e) {
+        throw new Exception("Symbol in hydrophobic textfield needs to be a number");
+      }
+      System.out.println("heheh");
+      List<AbstractCondition> conditionList = commandParser.parseCommand(commandField.getText());
+      List<AminoEntry> filteredList = aminoModel.filterAminos(minLength, maxLength, conditionList, sortByHydrophobic, hydroCount); 
+      renderTable(filteredList);
+      errorLabel.setText("Error Field                 ");
     } catch (Exception e) {
       errorLabel.setText(e.getMessage());
     }
@@ -237,7 +273,7 @@ public class AminoWindow {
       aminoModel.setAminoList(aminoList);
       renderTable(aminoList);
     } catch (Exception e) {
-      // TODO: handle exception
+      errorLabel.setText("No file selected");
     }
     
   }

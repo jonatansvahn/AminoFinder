@@ -64,7 +64,7 @@ public class CommandParser {
         case NUMBER:
           if (isNumeric(commandChunk)) {
             int num = Integer.parseInt(commandChunk);
-            AbstractCondition condition = matchCondition(currentCondition);
+            CountCondition condition = matchCondition(currentCondition);
             condition.setSymbol(currentSymbol);
             condition.setNumber(num);
             conditionList.add(condition);
@@ -101,8 +101,8 @@ public class CommandParser {
     return true;
   }
 
-  private AbstractCondition matchCondition(conditions condition) throws Exception{
-    AbstractCondition currentCondition;
+  private CountCondition matchCondition(conditions condition) throws Exception{
+    CountCondition currentCondition;
     switch (condition) {
       case EQUAL:
         currentCondition = new EqualCondition();

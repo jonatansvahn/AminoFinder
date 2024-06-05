@@ -1,6 +1,6 @@
 package aminoacid;
 
-public class LessCondition extends AbstractCondition {
+public class LessCondition extends CountCondition {
 
 
   @Override

@@ -11,9 +11,11 @@ public class AminoModel {
   }
   
 
-  public List<AminoEntry> filterAminos(int minLength, int maxLength, List<AbstractCondition> conditionList) {
+  public List<AminoEntry> filterAminos(int minLength, int maxLength, List<AbstractCondition> conditionList, boolean filterByHydrophobe, int hydrophobicCount) {
     List<AminoEntry> filteredList = new ArrayList<AminoEntry>();
-    
+    if (filterByHydrophobe) {
+      conditionList.add(new HydrophobeCondition(hydrophobicCount));
+    }
 
     for (AminoEntry aminoEntry : aminoList) {
       boolean filterThrough = true;
@@ -27,6 +29,10 @@ public class AminoModel {
         filteredList.add(aminoEntry);
       }
     }
+    if (filterByHydrophobe) {
+      Collections.sort(filteredList, (a, b) -> Integer.compare(b.getHydrophobicCount(), a.getHydrophobicCount()));
+    }
+
     return filteredList;
   }
 

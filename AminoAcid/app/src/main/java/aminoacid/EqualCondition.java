@@ -1,6 +1,6 @@
 package aminoacid;
 
-public class EqualCondition extends AbstractCondition{
+public class EqualCondition extends CountCondition{
 
 
 
